@@ -1,1 +1,0 @@
-" # Medium SQL Questions" 
