@@ -1,0 +1,73 @@
+-- =========================================================
+-- 🛒 Problem: Finding Returning Active Users
+-- Difficulty: Medium
+-- ID: 10322
+-- Last Updated: April 2026
+-- =========================================================
+
+/*
+📌 Problem Statement:
+Identify users who made a second purchase within 1 to 7 days
+after their first purchase. Ignore same-day purchases.
+
+Return a list of user_ids.
+
+---
+
+🧠 Approach:
+
+1. Use RANK() to identify each user's purchase order.
+2. Use LEAD() to get the next purchase date.
+3. Use DATEDIFF() to calculate the gap between purchases.
+4. Filter:
+
+   * Only first purchase (rnk = 1)
+   * Second purchase within 1–7 days (exclude same-day = 0)
+
+---
+
+💡 Key Concepts:
+
+* Window Functions: RANK(), LEAD()
+* Date Functions: DATEDIFF()
+* Partitioning by user_id
+
+---
+
+🚀 SQL Solution:
+*/
+
+WITH cte AS (
+SELECT
+user_id,
+created_at,
+
+```
+    RANK() OVER (
+        PARTITION BY user_id 
+        ORDER BY created_at
+    ) AS rnk,
+
+    DATEDIFF(
+        LEAD(created_at) OVER (
+            PARTITION BY user_id 
+            ORDER BY created_at
+        ),
+        created_at
+    ) AS next_order
+
+FROM amazon_transactions
+```
+
+)
+
+SELECT user_id
+FROM cte
+WHERE rnk = 1
+AND next_order BETWEEN 1 AND 7;
+
+-- =========================================================
+-- 🧾 Summary:
+-- Finds users whose second purchase occurs within 7 days
+-- of their first purchase (excluding same-day purchases).
+-- =========================================================
