@@ -41,13 +41,10 @@ WITH cte AS (
 SELECT
 user_id,
 created_at,
-
-```
     RANK() OVER (
         PARTITION BY user_id 
         ORDER BY created_at
     ) AS rnk,
-
     DATEDIFF(
         LEAD(created_at) OVER (
             PARTITION BY user_id 
@@ -55,10 +52,7 @@ created_at,
         ),
         created_at
     ) AS next_order
-
 FROM amazon_transactions
-```
-
 )
 
 SELECT user_id
