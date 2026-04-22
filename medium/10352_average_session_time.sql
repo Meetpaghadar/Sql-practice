@@ -20,8 +20,27 @@ OUTPUT:
 - user_id
 - average session time
 */
+/*updated  nicee solution*/
+with pl as (
+select user_id,max(timestamp) as plt,
+action, DATE(timestamp) as pldate
+from facebook_web_log
+where action = 'page_load'
+group by user_id,DATE(timestamp)
+),
+pe as (
+select user_id,min(timestamp) as pet,
+action,
+DATE(timestamp) as pedate
+from facebook_web_log
+where action ="page_exit"
+group by user_id,DATE(timestamp) 
+)
+select pe.user_id , plt,pet,pet-plt,TIMESTAMPDIFF(SECOND,pet,plt) from pl
+join pe on pl.user_id=pe.user_id and pl.pldate = pe.pedate
 
--- SOLUTION START --
+   /* old big solutionn */ 
+
 
 with cte as (
 select *
@@ -32,7 +51,7 @@ from facebook_web_log
 where action="page_load" or action="page_exit"
 )t
 ),
-
+   
 page_loads as(
 select * from cte
 where rnk1=1 and action="page_load"
