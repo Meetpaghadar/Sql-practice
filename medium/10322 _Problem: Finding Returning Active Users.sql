@@ -11,30 +11,8 @@ Identify users who made a second purchase within 1 to 7 days
 after their first purchase. Ignore same-day purchases.
 
 Return a list of user_ids.
-
 ---
-
-🧠 Approach:
-
-1. Use RANK() to identify each user's purchase order.
-2. Use LEAD() to get the next purchase date.
-3. Use DATEDIFF() to calculate the gap between purchases.
-4. Filter:
-
-   * Only first purchase (rnk = 1)
-   * Second purchase within 1–7 days (exclude same-day = 0)
-
----
-
-💡 Key Concepts:
-
-* Window Functions: RANK(), LEAD()
-* Date Functions: DATEDIFF()
-* Partitioning by user_id
-
----
-
-🚀 SQL Solution:
+ SQL Solution:
 */
 
 WITH cte AS (
